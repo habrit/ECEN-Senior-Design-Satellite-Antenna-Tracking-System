@@ -1,0 +1,9 @@
+.esri-view .esri-view-surface--inset-outline:focus::after {
+  outline: none !important;
+}
+
+.md-button {
+  max-width: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
