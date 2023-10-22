@@ -1,0 +1,61 @@
+{
+    "flags": {
+      "Connect": 0,
+      "Disconnect": 1,
+      "StartManual": 1,
+      "EndManual": 0,
+      "ToggleMode": 1,
+      "Increment(float,float)": [
+        {
+          "value1": 0.5,
+          "value2": 1.5
+        },
+        {
+          "value1": 1.0,
+          "value2": 2.0
+        }
+      ],
+      "Decrement(float,float)": [
+        {
+          "value1": 0.5,
+          "value2": 1.5
+        },
+        {
+          "value1": 1.0,
+          "value2": 2.0
+        }
+      ],
+      "SetPosition(float,float)": [
+        {
+          "value1": 10.0,
+          "value2": 20.0
+        }
+      ],
+      "StartAuto(String,int)": [
+        {
+          "value1": "ModeA",
+          "value2": 5
+        }
+      ],
+      "EndAuto": 1,
+      "ParkSatellite": 0,
+      "StopSatellite": 1,
+      "FetchSatellite(string)": [
+        {
+          "value": "SatelliteA"
+        }
+      ],
+      "SetAziOffset(Float)": [
+        {
+          "value": 0.0
+        }
+      ],
+      "SetEleOffset(Float)": [
+        {
+          "value": 1.5
+        }
+      ],
+      "GetPosition": 1
+    }
+  }
+  
