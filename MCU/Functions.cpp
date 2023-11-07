@@ -2,6 +2,7 @@
 #include "Constants.cpp"
 #include "TLEPredictFunctions.cpp"
 
+
 void collectCelestrakData()
 {
     const char *command = "curl 'https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle' > Celestrak.txt"; // Replace with the command you want to run
@@ -246,21 +247,17 @@ std::vector<std::string> compareFiles(const std::string &file1_path, const std::
 }
 
 // check first file to see if connect is set to 1
-bool checkConnectInJSON(const std::string &filename)
-{
+bool checkConnectInJSON(const std::string& filename) {
     std::ifstream file(filename);
-    if (!file.is_open())
-    {
+    if (!file.is_open()) {
         std::cerr << "File not found: " << filename << std::endl;
         return false;
     }
 
     std::string line;
-    while (std::getline(file, line))
-    {
+    while (std::getline(file, line)) {
         // Search for the specific string in each line
-        if (line.find("		\"Connect\":1,") != std::string::npos)
-        {
+        if (line.find("		\"Connect\":1,") != std::string::npos) {
             return true;
         }
     }
@@ -268,21 +265,19 @@ bool checkConnectInJSON(const std::string &filename)
     return false;
 }
 
-bool checkDisconnect(const std::string &filename)
-{
+
+
+bool checkDisconnect(const std::string& filename) {
     std::ifstream file(filename);
-    if (!file.is_open())
-    {
+    if (!file.is_open()) {
         std::cerr << "File not found: " << filename << std::endl;
         return false;
     }
 
     std::string line;
-    while (std::getline(file, line))
-    {
+    while (std::getline(file, line)) {
         // Search for the specific string with flexible whitespace
-        if (line.find("\"Disconnect\":1") != std::string::npos)
-        {
+        if (line.find("\"Disconnect\":1") != std::string::npos) {
             return true;
         }
     }
@@ -290,16 +285,83 @@ bool checkDisconnect(const std::string &filename)
     return false;
 }
 
-void pushFiletoFirebase(std::string fileName)
-{
+
+void pushFiletoFirebase(std::string fileName){
     const char *commandPart1 = "curl -X PUT -d @";
     const char *commandPart2 = " https://satellite-antenna-tracker-default-rtdb.firebaseio.com/SatelliteData/";
 
     std::string command = commandPart1 + fileName + commandPart2 + fileName;
     int result = std::system(command.c_str());
     std::cout << command << std::endl;
+    
+
 }
 
+double jsonTimeAZLookup(const std::string& filename, const std::string& targetTime) {
+    std::ifstream file(filename);
+    std::string line;
+    bool foundTarget = false;
+    std::string azimuth;
+
+    while (std::getline(file, line)) {
+        if (line.find(targetTime) != std::string::npos) {
+            foundTarget = true;
+        }
+
+        if (foundTarget) {
+            for (int i = 0; i < 4; i++) {
+                if (std::getline(file, line)) {
+                    if (line.find("azimuth") != std::string::npos) {
+                        std::cout << line << std::endl;
+                        azimuth = line;
+                    }
+                } else {
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
+    //Remove everything but numbers and period from azimuth
+    azimuth.erase(std::remove_if(azimuth.begin(), azimuth.end(), [](char c) { return !std::isdigit(c) && c != '.'; }), azimuth.end());
+    //std::cout << azimuth << std::endl;
+    return std::stod(azimuth);
+}
+double jsonTimeELLookup(const std::string& filename, const std::string& targetTime) {
+    std::ifstream file(filename);
+    std::string line;
+    bool foundTarget = false;
+    std::string elevation;
+
+    while (std::getline(file, line)) {
+        if (line.find(targetTime) != std::string::npos) {
+            foundTarget = true;
+        }
+
+        if (foundTarget) {
+            for (int i = 0; i < 5; i++) {
+                if (std::getline(file, line)) {
+                    if (line.find("elevation") != std::string::npos) {
+                        std::cout << line << std::endl;
+                        elevation = line;
+                    }
+                } else {
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
+    //Remove everything but numbers, period and negative sign from elevation
+    elevation.erase(std::remove_if(elevation.begin(), elevation.end(), [](char c) { return !std::isdigit(c) && c != '.' && c != '-'; }), elevation.end());
+    //std::cout << azimuth << std::endl;
+    return std::stod(elevation);
+}
+
+
+/*
 void gpioOut(int pinNumber, int sleepTime, bool debugging)
 {
 
@@ -331,3 +393,5 @@ void gpioOut(int pinNumber, int sleepTime, bool debugging)
         std::cout << "GPIO " << pinNumber << " is now low" << std::endl; // Output message
     }
 }
+*/
+

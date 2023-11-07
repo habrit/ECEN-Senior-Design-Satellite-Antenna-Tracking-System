@@ -363,8 +363,8 @@ void Satellite::predict(const DateTime &dt)
     CZ[1] = CW * SI;
     CZ[2] = CI;
 
-    // Compute SATellite's position vector and VELocity in
-    // CELESTIAL coordinates. (Note: Sz=S[2]=0, Vz=V[2]=0)
+    // Compute SATellite's position vector and Velocity in
+    // Celestial coordinates. (Note: Sz=S[2]=0, Vz=V[2]=0)
     SAT[0] = S[0] * CX[0] + S[1] * CX[1];
     SAT[1] = S[0] * CY[0] + S[1] * CY[1];
     SAT[2] = S[0] * CZ[0] + S[1] * CZ[1];
@@ -431,4 +431,49 @@ void Satellite::elaz(const Observer &obs, double &el, double &az)
     el = degrees(asin(u));
 }
 
+void Satellite::footprint(int p_aipoints[][2], int p_inumberofpoints, double &p_dsatlat, double &p_dsatlon) {
 
+    int l_ii;
+    
+    double footprintRadius;
+    double l_dcla, l_dsla, l_dclo, l_dslo;
+    double fpRadSin, fpRadCos;
+    
+    double l_da, l_dx, l_dy, l_dz, l_dXfp, l_dYfp, l_dZfp;
+    
+        
+    footprintRadius = acos(RE / RS);  // Radius of footprint circle
+    fpRadSin  = sin(footprintRadius);            // Sin/Cos these to save time
+    fpRadCos  = cos(footprintRadius);
+
+    l_dcla  = cos(radians(p_dsatlat));
+    l_dsla  = sin(radians(p_dsatlat));
+    l_dclo  = cos(radians(p_dsatlon));
+    l_dslo  = sin(radians(p_dsatlon));
+    
+    for ( l_ii = 0; l_ii < p_inumberofpoints ; l_ii++)               // "numberofpoints" points to the circle
+    {
+        l_da = 2.0 * M_PI * (double)l_ii / (double)p_inumberofpoints;  // Angle around the circle
+        l_dXfp = fpRadCos;                                             // Circle of points centred on Lat=0, Lon=0
+        l_dYfp = fpRadSin * sin(l_da);                                 // assuming Earth's radius = 1
+        l_dZfp = fpRadSin * cos(l_da);
+        
+        l_dx   = l_dXfp * l_dcla - l_dZfp * l_dsla;                  // Rotate point "up" by latitude "satlat"
+        l_dy   = l_dYfp;                                             // -"-
+        l_dz   = l_dXfp * l_dsla + l_dZfp * l_dcla;                  // -"-
+        
+        l_dXfp = l_dx * l_dclo - l_dy * l_dslo;                      // Rotate point "around" through longitude "satlon"
+        l_dYfp = l_dx * l_dslo + l_dy * l_dclo;                      // -"-
+        l_dZfp = l_dz;                                               // -"-
+        //Convert to geocentric coordinates
+        l_dx   = RS * l_dXfp;
+        l_dy   = RS * l_dYfp;
+        l_dz   = RS * l_dZfp;
+        //Add to array of points
+        p_aipoints[l_ii][0] = (int)l_dx;
+        p_aipoints[l_ii][1] = (int)l_dy;
+        
+
+    }
+
+}

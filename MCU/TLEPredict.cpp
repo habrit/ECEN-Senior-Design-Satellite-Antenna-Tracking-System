@@ -21,9 +21,9 @@ char acBuffer[20]; // Buffer for ASCII time
 int main()
 {
 
-    // const char *tleName = "ISS (ZARYA)";
-    // const char *tlel1 = "1 25544U 98067A   23108.43397694  .00019322  00000+0  34619-3 0  9991";
-    // const char *tlel2 = "2 25544  51.6395 264.6579 0006032 207.9800 203.3391 15.49946793392526";
+    //const char *tleNameChar = "ISS (ZARYA)";
+    //const char *tlel1Char = "1 25544U 98067A   23108.43397694  .00019322  00000+0  34619-3 0  9991";
+    //const char *tlel2Char = "2 25544  51.6395 264.6579 0006032 207.9800 203.3391 15.49946793392526";
 
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
@@ -44,7 +44,7 @@ int main()
     int startSecond = second;
 
     std::string tleName, tlel1, tlel2;
-
+    
     if (std::getline(std::cin, tleName) && std::getline(std::cin, tlel1) && std::getline(std::cin, tlel2))
     {
         // Print the collected lines
@@ -59,7 +59,10 @@ int main()
     }
 
     tleName.erase(std::remove_if(tleName.begin(), tleName.end(), ::isspace), tleName.end()); // Remove Spaces
-
+    //Remove Parenthesis from tleNAME
+    tleName.erase(std::remove(tleName.begin(), tleName.end(), '('), tleName.end());
+    tleName.erase(std::remove(tleName.begin(), tleName.end(), ')'), tleName.end());
+    
     std::cout << tleName << std::endl;
     std::ofstream myfile(tleName + ".json"); // Create json files
     myfile << "{\n";
@@ -77,12 +80,15 @@ int main()
     DateTime MyTime(year, month, day, hour, minute, second); // Set start time for the prediction
     Observer MyQTH(ObserverLocation, myLat, myLong, myAlt);  // Set observer coordinates
     Satellite MySAT(tleNameChar, tlel1Char, tlel2Char);
-
+    int pointsarray[100][2];
+    int numberofpoints = 100;
     MyTime.ascii(acBuffer);                      // Get time for prediction as ASCII string
     MySAT.predict(MyTime);                       // Predict ISS for specific time
     MySAT.latlon(satelliteLat, satelliteLong);   // Get the rectangular coordinates
     MySAT.elaz(MyQTH, satelliteEl, satelliteAz); // Get azimuth and elevation for MyQTH
-
+    //MySAT.footprint(pointsarray, numberofpoints, satelliteLat, satelliteLong);
+    //std::cout << pointsarray[0][1] << std::endl;
+    //return 0;
     while (year == startYear && month == startMonth && day <= startDay + 2)
     {
         while (hour < 24)
@@ -115,18 +121,6 @@ int main()
                     {
                         myfile << "        },\n";
                     }
-                    /*
-                    std::cout << (acBuffer);
-                    std::cout << (" -> Lat: ");
-                    std::cout << satelliteLat;
-                    std::cout << (" Lon: ");
-                    std::cout << satelliteLong;
-                    std::cout << (" Az: ");
-                    std::cout << satelliteAz;
-                    std::cout << (" El: ");
-                    std::cout << satelliteEl;
-                    std::cout << ("") << std::endl;
-                    */
                     second++;
                 }
                 second = 0;
@@ -167,6 +161,10 @@ int main()
     myfile.close();
 
     //push file to firebase using pushFiletoFirebase(std::string fileName)
+    //Remove Parenthesis from tleNAME
+    tleName.erase(std::remove(tleName.begin(), tleName.end(), '('), tleName.end());
+    tleName.erase(std::remove(tleName.begin(), tleName.end(), ')'), tleName.end());
+
     pushFiletoFirebase(tleName + ".json");
 
 

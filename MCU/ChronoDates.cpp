@@ -1,5 +1,4 @@
-#include <iostream>
-#include <chrono>
+#include "Functions.cpp"
 
 int main() {
     auto now = std::chrono::system_clock::now();
@@ -15,6 +14,7 @@ int main() {
 
     std::cout << "Date: " << year << "-" << month << "-" << day << std::endl;
     std::cout << "Time: " << hour << ":" << minute << ":" << second << std::endl;
+
 
     return 0;
 }

@@ -21,6 +21,7 @@ static double radians(double deg); // Degrees to radians
 
 //List of constants
 
+
 extern const double RE;         // World Geodetic Ellipsoid Earth ellipsoid
 extern const double FL; // Flattening Ratio
 extern const double RP;  // Polar Radius
@@ -66,8 +67,6 @@ extern const std::string STARTAUTO;
 extern const std::string STARTMANUAL;
 extern const std::string STOPSATELLITE;
 extern const std::string TOGGLEMODE;
-
-// Your code goes here
 
 
 
@@ -131,6 +130,7 @@ public:
     void predict(const DateTime &dt);
     void latlon(double &lat, double &lon);
     void elaz(const Observer &obs, double &el, double &az);
+    void footprint(int p_aipoints[][2], int p_inumberofpoints, double &p_dsatlat, double &p_dsatlon);
 
 private:
     long N;      // Satellite calaog number
@@ -183,7 +183,10 @@ void downloadAndPrettifyJSON(const std::string &url, const std::string &outputPa
 
 std::vector<std::string> compareFiles(const std::string &file1_path, const std::string &file2_path, bool debugging); // Compares two files and returns the differences
 
-void gpioOut(int pinNumber, int sleepTime, bool debugging);
+double jsonTimeAZLookup(const std::string& filename, const std::string& targetTime);
+double jsonTimeELLookup(const std::string& filename, const std::string& targetTime);
+
+//void gpioOut(int pinNumber, int sleepTime, bool debugging);
 
 
 #endif // CELESTRAK_H
