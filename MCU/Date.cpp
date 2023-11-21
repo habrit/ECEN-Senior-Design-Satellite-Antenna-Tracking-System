@@ -3,8 +3,10 @@
 #include <chrono>
 #include <thread>
 
-int main() {
-    while (true) {
+int main()
+{
+    while (true)
+    {
         // Execute the terminal command using std::system
         std::system("date");
 

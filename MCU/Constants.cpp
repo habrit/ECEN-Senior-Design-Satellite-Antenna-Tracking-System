@@ -1,6 +1,6 @@
 #include "Celestrak.h"
 
-//Satellite Constants
+// Satellite Constants
 const double RE = 6378.137;         // World Geodetic Ellipsoid Earth ellipsoid
 const double FL = 1.0 / 298.257224; // Flattening Ratio
 const double RP = RE * (1.0 - FL);  // Polar Radius
@@ -27,10 +27,6 @@ const double EQC2 = 0.00035;
 
 const double AU = 149.597870700E6; // Mean range to the sun, km
 
-
-
-
-//Constants
+// Constants
 const std::string CONNECT = "Connect";
 const std::string DISCONNECT = "DISCONNECT";
-

@@ -14,26 +14,29 @@
 #include <cctype>
 #include <cmath>
 #include <unistd.h> // for sleep()
-
+#include <thread>
+#include <atomic>
+#include <cstring>
+#include <fcntl.h>
+#include <termios.h>
 
 static double degrees(double rad); // Radians to degrees
 static double radians(double deg); // Degrees to radians
 
-//List of constants
+// List of constants
 
-
-extern const double RE;         // World Geodetic Ellipsoid Earth ellipsoid
+extern const double RE; // World Geodetic Ellipsoid Earth ellipsoid
 extern const double FL; // Flattening Ratio
-extern const double RP;  // Polar Radius
+extern const double RP; // Polar Radius
 
-extern const double GM;    // Earth's Gravitational constant km^3/s^2
+extern const double GM; // Earth's Gravitational constant km^3/s^2
 extern const double J2; // 2nd Zonal coeffecient of the Earth's gravity field
 
-extern const double YM;          // Mean Year,     days
-extern const double YT;     // Tropical year, days
+extern const double YM; // Mean Year,     days
+extern const double YT; // Tropical year, days
 extern const double WW; // Earth's rotation rate, radians/whole day
 extern const double WE; // Earth's rotation rate, radians/day
-extern const double W0;    // Earth's rotation rate, radians/sec
+extern const double W0; // Earth's rotation rate, radians/sec
 
 // Sidereal and Solar data. Rarely needs changing. Valid to year ~2030
 extern const double YG; // GHAA, Year YG, Jan 0.0
@@ -47,6 +50,10 @@ extern const double EQC1; // Sun's Equation of centre terms
 extern const double EQC2;
 
 extern const double AU; // Mean range to the sun, km
+
+extern std::atomic<bool> stopTracking;
+extern std::atomic<bool> flipOver;
+
 
 typedef double Vec3[3];
 
@@ -68,14 +75,10 @@ extern const std::string STARTMANUAL;
 extern const std::string STOPSATELLITE;
 extern const std::string TOGGLEMODE;
 
-
-
-
 static long fnday(int y, int m, int d);                 // Function to calculate the day of the year
 static void fndate(int &y, int &m, int &d, long dt);    // Function to calculate the date from the day of the year
 static double getdouble(const char *c, int i0, int i1); // Function to get a double from a string
 static long getlong(const char *c, int i0, int i1);     // Function to get a long from a string
-
 
 class DateTime
 {
@@ -96,7 +99,6 @@ public:
     void roundup(double);                                                // Rounds to nearest number of seconds
 };
 
-
 // Location of observer
 class Observer
 {
@@ -112,7 +114,6 @@ public:
     Observer(const char *nm, double lat, double lon, double asl);
     ~Observer();
 };
-
 
 class Satellite
 {
@@ -131,6 +132,8 @@ public:
     void latlon(double &lat, double &lon);
     void elaz(const Observer &obs, double &el, double &az);
     void footprint(int p_aipoints[][2], int p_inumberofpoints, double &p_dsatlat, double &p_dsatlon);
+    double doppler(double freqMHZ, bool direction);
+    double dopplerOffset(double freqMHZ);
 
 private:
     long N;      // Satellite calaog number
@@ -155,8 +158,8 @@ private:
     double QD, WD, DC;   // QD = perigee distance, WD = perigee velocity, DC = drag coefficient
 
     double RS; // Radius of satellite orbit
+    double drr; //Range rate for doppler
 };
-
 
 static long fnday(int y, int m, int d);
 
@@ -166,13 +169,12 @@ static double getdouble(const char *c, int i0, int i1);
 
 static long getlong(const char *c, int i0, int i1);
 
-
-
-bool checkConnectInJSON(const std::string& filename);   //Check if Connected
-bool checkDisconnect(const std::string& filename);    //Returns true if disconnected
-
+bool checkConnectInJSON(const std::string &filename); // Check if Connected
+bool checkDisconnect(const std::string &filename);    // Returns true if disconnected
 
 void collectCelestrakData(); // Collects the Celestrak TLE's and outputs it to Celestrak.txt. NEEDS TO RUN DAILY
+
+std::string findLineWithString(const std::string& searchString);
 
 bool findSatelliteData(const std::string &satName); // Returns true if the satellite data is found, false otherwise
 void exampleTLELookupCase();                        // Example case for findSatelliteData
@@ -183,10 +185,20 @@ void downloadAndPrettifyJSON(const std::string &url, const std::string &outputPa
 
 std::vector<std::string> compareFiles(const std::string &file1_path, const std::string &file2_path, bool debugging); // Compares two files and returns the differences
 
-double jsonTimeAZLookup(const std::string& filename, const std::string& targetTime);
-double jsonTimeELLookup(const std::string& filename, const std::string& targetTime);
+double jsonTimeAZLookup(const std::string &filename, const std::string &targetTime);
+double jsonTimeELLookup(const std::string &filename, const std::string &targetTime);
+
+double stringToDouble(std::string str);
 
 //void gpioOut(int pinNumber, int sleepTime, bool debugging);
-
+//void gpioOutmicro(int pinNumber, int sleepTime, bool debugging);
+void breakFunction();
+void AzIncrement(double angle, int step);
+void AzDecrement(double angle, int step);
+void ElIncrement(double angle, int step);
+void ElDecrement(double angle, int step);
+void moveToPosition(double az, double el);
+void trackSatellite(std::string SatelliteName);
+std::vector<std::string> findLineInJson(const std::string &filename, const std::string &searchLine);
 
 #endif // CELESTRAK_H

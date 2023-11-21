@@ -3,9 +3,11 @@
 #include <vector>
 #include <sstream>
 
-int main() {
+int main()
+{
     std::ifstream file("time.txt");
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         std::cerr << "Failed to open the file." << std::endl;
         return 1;
     }
@@ -14,20 +16,24 @@ int main() {
     double num;
     std::string line;
 
-    while (std::getline(file, line)) {
+    while (std::getline(file, line))
+    {
         std::istringstream ss(line);
-        while (ss >> num) {
+        while (ss >> num)
+        {
             numbers.push_back(num);
         }
     }
 
-    if (numbers.empty()) {
+    if (numbers.empty())
+    {
         std::cerr << "No numbers found in the file." << std::endl;
         return 1;
     }
 
     double sum = 0.0;
-    for (double number : numbers) {
+    for (double number : numbers)
+    {
         sum += number;
     }
 

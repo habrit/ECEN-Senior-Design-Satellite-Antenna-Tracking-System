@@ -27,8 +27,8 @@
       ],
       "SetPosition(float,float)": [
         {
-          "value1": 10.0,
-          "value2": 20.0
+          "value1": 0,
+          "value2": 0
         }
       ],
       "StartAuto(String,int)": [

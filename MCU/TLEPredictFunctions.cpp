@@ -429,6 +429,10 @@ void Satellite::elaz(const Observer &obs, double &el, double &az)
 
     // Elevation
     el = degrees(asin(u));
+
+    //Range Rate calculation
+    drr = (V[0] - obs.V[0]) * R[0] + (V[1] - obs.V[1]) * R[1] + V[2] * R[2];
+
 }
 
 void Satellite::footprint(int p_aipoints[][2], int p_inumberofpoints, double &p_dsatlat, double &p_dsatlon) {
@@ -475,5 +479,20 @@ void Satellite::footprint(int p_aipoints[][2], int p_inumberofpoints, double &p_
         
 
     }
+}
+double Satellite::doppler(double freqMHZ, bool direction){
+    double dopplershift = dopplerOffset(freqMHZ);
+    if (direction){
+        freqMHZ = freqMHZ - dopplershift;
+    }
+    else{
+        freqMHZ = freqMHZ + dopplershift;
+    }
+    return freqMHZ;
+}
 
+double Satellite::dopplerOffset(double freqMHZ){
+    double dopplershift = 0;
+    dopplershift = -freqMHZ * (drr / 299792.0);
+    return dopplershift;
 }

@@ -1,7 +1,10 @@
 #include "Functions.cpp"
 
-int main() {
+// Crontab to run everyday at 5am Local
+
+int main()
+{
     collectCelestrakData();
-    
+
     return 0;
 }

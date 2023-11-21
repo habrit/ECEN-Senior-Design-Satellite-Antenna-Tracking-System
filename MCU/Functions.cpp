@@ -1,7 +1,10 @@
 #include "Celestrak.h"
 #include "Constants.cpp"
 #include "TLEPredictFunctions.cpp"
+#include "GPIOFunctions.cpp"
 
+std::atomic<bool> stopTracking(false);
+std::atomic<bool> flipOver(false);
 
 void collectCelestrakData()
 {
@@ -247,17 +250,21 @@ std::vector<std::string> compareFiles(const std::string &file1_path, const std::
 }
 
 // check first file to see if connect is set to 1
-bool checkConnectInJSON(const std::string& filename) {
+bool checkConnectInJSON(const std::string &filename)
+{
     std::ifstream file(filename);
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         std::cerr << "File not found: " << filename << std::endl;
         return false;
     }
 
     std::string line;
-    while (std::getline(file, line)) {
+    while (std::getline(file, line))
+    {
         // Search for the specific string in each line
-        if (line.find("		\"Connect\":1,") != std::string::npos) {
+        if (line.find("		\"Connect\":1,") != std::string::npos)
+        {
             return true;
         }
     }
@@ -265,19 +272,24 @@ bool checkConnectInJSON(const std::string& filename) {
     return false;
 }
 
-
-
-bool checkDisconnect(const std::string& filename) {
+bool checkDisconnect(const std::string &filename)
+{
     std::ifstream file(filename);
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         std::cerr << "File not found: " << filename << std::endl;
         return false;
     }
 
     std::string line;
-    while (std::getline(file, line)) {
+    while (std::getline(file, line))
+    {
         // Search for the specific string with flexible whitespace
-        if (line.find("\"Disconnect\":1") != std::string::npos) {
+        if (line.find("\"Disconnect\":1") != std::string::npos)
+        {
+            breakFunction();
+            stopTracking = true;
+            flipOver = false;
             return true;
         }
     }
@@ -285,37 +297,115 @@ bool checkDisconnect(const std::string& filename) {
     return false;
 }
 
+// Find the time in JSON File and return next 5 lines
+std::vector<std::string> findLineInJson(const std::string &filename, const std::string &searchLine)
+{
+    std::ifstream file(filename);
+    if (!file.is_open())
+    {
+        std::cerr << "File not found: " << filename << std::endl;
+        return {};
+    }
+    // Remove the slashes and quotes from the searchLine
+    std::string searchLineCleaned = searchLine;
+    searchLineCleaned.erase(std::remove(searchLineCleaned.begin(), searchLineCleaned.end(), '\"'), searchLineCleaned.end());
+    searchLineCleaned.erase(std::remove(searchLineCleaned.begin(), searchLineCleaned.end(), '/'), searchLineCleaned.end());
+    searchLineCleaned.erase(std::remove(searchLineCleaned.begin(), searchLineCleaned.end(), '\"'), searchLineCleaned.end());
+    std::vector<std::string> result;
+    std::string line;
+    bool found = false;
+    while (std::getline(file, line))
+    {
+        if (line.find(searchLineCleaned) != std::string::npos)
+        {
+            found = true;
+            result.push_back(line);
+            for (int i = 0; i < 5 && std::getline(file, line); i++)
+            {
+                result.push_back(line);
+            }
+            break;
+        }
+    }
 
-void pushFiletoFirebase(std::string fileName){
+    if (!found)
+    {
+        std::cerr << "Line not found: " << searchLine << std::endl;
+        return {};
+    }
+
+    return result;
+}
+
+double stringToDouble(std::string str)
+{
+    double result = 0.0;
+    double factor = 1.0;
+    bool decimal = false;
+    int decimalPlaces = 0;
+
+    for (char c : str)
+    {
+        if (c == '.')
+        {
+            decimal = true;
+        }
+        else if (c >= '0' && c <= '9')
+        {
+            if (decimal)
+            {
+                decimalPlaces++;
+                factor /= 10.0;
+                result += (c - '0') * factor;
+            }
+            else
+            {
+                result = result * 10.0 + (c - '0');
+            }
+        }
+    }
+
+    return result;
+}
+
+void pushFiletoFirebase(std::string fileName)
+{
     const char *commandPart1 = "curl -X PUT -d @";
     const char *commandPart2 = " https://satellite-antenna-tracker-default-rtdb.firebaseio.com/SatelliteData/";
 
     std::string command = commandPart1 + fileName + commandPart2 + fileName;
     int result = std::system(command.c_str());
     std::cout << command << std::endl;
-    
-
 }
 
-double jsonTimeAZLookup(const std::string& filename, const std::string& targetTime) {
+double jsonTimeAZLookup(const std::string &filename, const std::string &targetTime)
+{
     std::ifstream file(filename);
     std::string line;
     bool foundTarget = false;
     std::string azimuth;
 
-    while (std::getline(file, line)) {
-        if (line.find(targetTime) != std::string::npos) {
+    while (std::getline(file, line))
+    {
+        if (line.find(targetTime) != std::string::npos)
+        {
             foundTarget = true;
         }
 
-        if (foundTarget) {
-            for (int i = 0; i < 4; i++) {
-                if (std::getline(file, line)) {
-                    if (line.find("azimuth") != std::string::npos) {
+        if (foundTarget)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if (std::getline(file, line))
+                {
+                    if (line.find("azimuth") != std::string::npos)
+                    {
                         std::cout << line << std::endl;
                         azimuth = line;
                     }
-                } else {
+                }
+                else
+                {
                     break;
                 }
             }
@@ -323,30 +413,41 @@ double jsonTimeAZLookup(const std::string& filename, const std::string& targetTi
         }
     }
 
-    //Remove everything but numbers and period from azimuth
-    azimuth.erase(std::remove_if(azimuth.begin(), azimuth.end(), [](char c) { return !std::isdigit(c) && c != '.'; }), azimuth.end());
-    //std::cout << azimuth << std::endl;
+    // Remove everything but numbers and period from azimuth
+    azimuth.erase(std::remove_if(azimuth.begin(), azimuth.end(), [](char c)
+                                 { return !std::isdigit(c) && c != '.'; }),
+                  azimuth.end());
+    // std::cout << azimuth << std::endl;
     return std::stod(azimuth);
 }
-double jsonTimeELLookup(const std::string& filename, const std::string& targetTime) {
+double jsonTimeELLookup(const std::string &filename, const std::string &targetTime)
+{
     std::ifstream file(filename);
     std::string line;
     bool foundTarget = false;
     std::string elevation;
 
-    while (std::getline(file, line)) {
-        if (line.find(targetTime) != std::string::npos) {
+    while (std::getline(file, line))
+    {
+        if (line.find(targetTime) != std::string::npos)
+        {
             foundTarget = true;
         }
 
-        if (foundTarget) {
-            for (int i = 0; i < 5; i++) {
-                if (std::getline(file, line)) {
-                    if (line.find("elevation") != std::string::npos) {
+        if (foundTarget)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                if (std::getline(file, line))
+                {
+                    if (line.find("elevation") != std::string::npos)
+                    {
                         std::cout << line << std::endl;
                         elevation = line;
                     }
-                } else {
+                }
+                else
+                {
                     break;
                 }
             }
@@ -354,44 +455,39 @@ double jsonTimeELLookup(const std::string& filename, const std::string& targetTi
         }
     }
 
-    //Remove everything but numbers, period and negative sign from elevation
-    elevation.erase(std::remove_if(elevation.begin(), elevation.end(), [](char c) { return !std::isdigit(c) && c != '.' && c != '-'; }), elevation.end());
-    //std::cout << azimuth << std::endl;
+    // Remove everything but numbers, period and negative sign from elevation
+    elevation.erase(std::remove_if(elevation.begin(), elevation.end(), [](char c)
+                                   { return !std::isdigit(c) && c != '.' && c != '-'; }),
+                    elevation.end());
+    // std::cout << azimuth << std::endl;
     return std::stod(elevation);
 }
 
-
-/*
-void gpioOut(int pinNumber, int sleepTime, bool debugging)
+void runTLELookupAndPredict(const std::string &satName)
 {
 
-    std::string gpioPath = "/sys/class/gpio/gpio" + std::to_string(pinNumber);
-
-    std::ofstream gpioExport("/sys/class/gpio/export"); // Open file to export GPIO pin
-    gpioExport << pinNumber;                            // Write GPIO number to file
-    gpioExport.close();                                 // Close file
-
-    std::ofstream gpioDir(gpioPath + "/direction"); // Open file to set GPIO pin direction
-    gpioDir << "out";                               // Write "out" to file to set direction as output
-    gpioDir.close();                                // Close file
-
-    std::ofstream gpioVal(gpioPath + "/value"); // Open file to set GPIO pin value
-    gpioVal << "1";                             // Write "1" to file to set value high
-    gpioVal.close();                            // Close file
-    if (debugging)
-    {
-        std::cout << "GPIO " << pinNumber << " is now high" << std::endl; // Output message
-    }
-
-    sleep(sleepTime); // Hold the GPIO pin high for specified time
-
-    gpioVal.open(gpioPath + "/value"); // Open file to set GPIO pin value
-    gpioVal << "0";                    // Write "0" to file to set value low
-    gpioVal.close();                   // Close file
-    if (debugging)
-    {
-        std::cout << "GPIO " << pinNumber << " is now low" << std::endl; // Output message
-    }
+    // Run TLE lookup and prediction
+    std::string command = "./TLELookup \"" + satName + "\" | ./TLEPredict";
+    std::cout << command << std::endl;
+    system(command.c_str());
 }
-*/
+
+std::string findLineWithString(const std::string &searchString)
+{
+    std::string filename = "Celestrak.txt";
+    std::ifstream file(filename);
+    std::string line;
+
+    while (std::getline(file, line))
+    {
+        if (line.find(searchString) != std::string::npos)
+        {
+            std::cout << line << std::endl;
+            return line;
+        }
+    }
+
+    return ""; // Return an empty string if the search string is not found
+}
+
 

@@ -1,6 +1,7 @@
 #include "Functions.cpp"
 
-int main() {
+int main()
+{
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
     auto tm = std::gmtime(&time);
@@ -14,7 +15,6 @@ int main() {
 
     std::cout << "Date: " << year << "-" << month << "-" << day << std::endl;
     std::cout << "Time: " << hour << ":" << minute << ":" << second << std::endl;
-
 
     return 0;
 }

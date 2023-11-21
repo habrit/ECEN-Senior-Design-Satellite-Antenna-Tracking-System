@@ -1,7 +1,7 @@
 #include "Functions.cpp"
 
-
-int main(){
+int main()
+{
     double az = 0;
     double rotateTime = 0;
     // Reading current Azimuth of rotator
@@ -9,9 +9,11 @@ int main(){
     std::ifstream azFile(azPath);
     std::string contents;
 
-    if (azFile.is_open()) {
+    if (azFile.is_open())
+    {
         std::string line;
-        while (getline(azFile, line)) {
+        while (getline(azFile, line))
+        {
             contents += line + "\n";
         }
         azFile.close();
@@ -21,7 +23,7 @@ int main(){
     az = std::stod(contents);
     std::cout << "Current Azimuth: " << az << std::endl;
 
-    //Current AZ of selected satellite
+    // Current AZ of selected satellite
     std::string filename = "ISSZARYA.json";
     std::string targetString = "azimuth";
     double azSat = 0;
@@ -44,16 +46,15 @@ int main(){
 
     std::string targetTime = acBuffer;
 
-    azSat= jsonTimeAZLookup(filename, targetTime);
+    azSat = jsonTimeAZLookup(filename, targetTime);
     std::cout << "az: " << azSat << std::endl;
 
     double azDiff = az - azSat;
     std::cout << "azDiff: " << azDiff << std::endl;
 
-    //Rotator rotates 6.92 degrees per second
+    // Rotator rotates 6.92 degrees per second
     rotateTime = azDiff / 6.92;
     std::cout << "rotateTime: " << rotateTime << std::endl;
-
 
     return 0;
 }
