@@ -5,10 +5,10 @@
 // https://www.satflare.com/track.asp?q=25544#TOP        (Tracking the ISS to check versus prediction)
 // https://www.amsat.org/articles/g3ruh/111.html         (Plan13, which was used for a lot of these calculations)
 
-const char *ObserverLocation = "Cstat"; // Observer name
-double myLat = 30.585770;               // Latitude
-double myLong = -96.344610;             // Longitude
-double myAlt = 386.0;                   // Altitude Above Sea Level
+//const char *ObserverLocation = "Cstat"; // Observer name
+// double myLat = 30.585770;               // Latitude
+// double myLong = -96.344610;             // Longitude
+// double myAlt = 386.0;                   // Altitude Above Sea Level
 
 double satelliteLat = 0;  // Satellite latitude
 double satelliteLong = 0; // Satellite longitude

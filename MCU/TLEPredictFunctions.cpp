@@ -3,6 +3,12 @@
 
 // Radians to degrees
 
+
+const char *ObserverLocation = "College Station, TX";
+double myLat = 30.585770;               // Latitude
+double myLong = -96.344610;             // Longitude
+double myAlt = 386.0;                   // Altitude Above Sea Level
+
 static double degrees(double rad)
 {
     return (rad * 180.0 / M_PI);

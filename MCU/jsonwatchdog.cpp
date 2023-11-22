@@ -173,6 +173,51 @@ int main()
                     myfile.close();
                 }
             }
+            if (cleanedResult.find("Park Satellite") != std::string::npos)
+            {
+                std::cout << "Park Satellite" << std::endl;
+                // set all GPIO pins to low and write current Az El to file
+                // Read Az and El from file
+                std::string azPath = "AzimuthEx.txt";
+                std::ifstream azFile(azPath);
+                std::string contents;
+
+                if (azFile.is_open())
+                {
+                    std::string line;
+                    while (getline(azFile, line))
+                    {
+                        contents += line + "\n";
+                        // std::cout << contents << std::endl;
+                    }
+                    azFile.close();
+                }
+
+                std::string elPath = "ElevationEx.txt";
+                std::ifstream elFile(elPath);
+                std::string elContents;
+
+                if (elFile.is_open())
+                {
+                    std::string line;
+                    while (getline(elFile, line))
+                    {
+                        elContents += line + "\n";
+                        // std::cout << contents << std::endl;
+                    }
+                    elFile.close();
+                }
+                // Run break function
+                breakFunction;
+                // Write Az and El to file
+                std::ofstream azFileOut(azPath);
+                azFileOut << contents;
+                azFileOut.close();
+
+                std::ofstream elFileOut(elPath);
+                elFileOut << elContents;
+                elFileOut.close();
+            }
         }
         // std::cout << "Differences found: " << differencesFound << std::endl;
         //  std::cout << "Done" << std::endl;

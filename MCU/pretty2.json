@@ -46,7 +46,7 @@
 			"SetPosEl":30
 		},
 		"StartAuto(String,int)":{
-			"SatNameAuto":"ISS",
+			"SatNameAuto":"TEST",
 			"StartAuto":true
 		},
 		"StartManual":1,

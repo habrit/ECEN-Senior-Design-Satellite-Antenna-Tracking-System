@@ -20,6 +20,13 @@
 #include <fcntl.h>
 #include <termios.h>
 
+extern const char *ObserverLocation;
+extern double myLat;               // Latitude
+extern double myLong;             // Longitude
+extern double myAlt;                   // Altitude Above Sea Level
+
+
+
 static double degrees(double rad); // Radians to degrees
 static double radians(double deg); // Degrees to radians
 

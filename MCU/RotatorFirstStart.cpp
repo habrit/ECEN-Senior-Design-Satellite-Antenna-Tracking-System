@@ -37,15 +37,15 @@ void azHome()
     double rotateTime = 0;
     rotateTime = az / 6.92;
 
-    gpioOut(19, rotateTime, true);
+    //gpioOut(19, rotateTime, true);
 
     // Rotate from 0 to 360* stop
 
-    gpioOut(26, 52, true);
+    //gpioOut(26, 52, true);
 
     // Rotate from 360* to 0* stop
 
-    gpioOut(19, 55, false);
+    //gpioOut(19, 55, false);
 
     // Set Azimuth to 0 in AzimuthEx.txt
     std::ofstream azFileOut(azPath);
@@ -78,15 +78,15 @@ double rotateTime = 0;
     double elRotateTime = 0;
     elRotateTime = el / 2.903;
 
-    gpioOut(13, rotateTime, true);
+    //gpioOut(13, rotateTime, true);
 
     // Rotate from 0 to 180* stop
 
-    gpioOut(6, 65, true);
+    //gpioOut(6, 65, true);
 
     // Rotate from 180* to 0* stop
 
-    gpioOut(13, 65, true);
+    //gpioOut(13, 65, true);
 
     // Set Elevation to 0 in ElevationEx.txt
     std::ofstream elFileOut(elPath);

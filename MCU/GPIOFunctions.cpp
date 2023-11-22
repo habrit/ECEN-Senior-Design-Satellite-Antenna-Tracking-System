@@ -269,6 +269,8 @@ void moveToPosition(double az, double el)
     // std::cout << elIncrement << std::endl;
     // std::cout << elDecrement << std::endl;
 
+
+
     //Check to see if elevation is going to be greater than 90*, if greater than 90* start rotating back to zero and rotate azimuth 180*
     //Need a way to track if elevation is greater than 90* and then rotate back to zero and rotate azimuth  + 180* so that way it does not start to go back to 90*
 
@@ -377,6 +379,18 @@ void trackSatellite(std::string SatelliteName)
 
         std::vector<std::string> timeJSON = findLineInJson(jsonName, timeString);
 
+        //Get TLE L1 and L2
+        std::string tlel2 = tleNameVector[1];
+        //std::cout << "TLEL2 + " << tlel2 << std::endl;
+        std::string tlel3 = tleNameVector[2];
+        //std::cout << "TLEL3 + " << tlel3 << std::endl;
+
+        DateTime dt(year, month, day, hour, minute, second);
+        Observer obs(ObserverLocation, myLat, myLong, myAlt);
+        Satellite sat(tleNameString.c_str(), tlel2.c_str(), tlel3.c_str());
+        sat.doppler(145.8, true);
+        //print out doppler
+        std::cout << "Doppler is: " << sat.doppler(145.8, true) << std::endl;
         // While timeJSON is empty, keep trying to find the time
         while (timeJSON.empty())
         {
@@ -446,7 +460,7 @@ void trackSatellite(std::string SatelliteName)
 
         // Move to position
         moveToPosition(stringToDouble(azimuth), stringToDouble(elevation));
-        //sleep(5);
+        sleep(5);
     }
 }
 
