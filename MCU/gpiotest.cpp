@@ -8,4 +8,6 @@ int main()
     gpioOut(13,15, true);
     gpioOut(6,15, true);
     */
+   breakFunction();
+    return 0;
 }

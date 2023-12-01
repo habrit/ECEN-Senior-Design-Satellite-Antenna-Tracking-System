@@ -197,8 +197,8 @@ double jsonTimeELLookup(const std::string &filename, const std::string &targetTi
 
 double stringToDouble(std::string str);
 
-//void gpioOut(int pinNumber, int sleepTime, bool debugging);
-//void gpioOutmicro(int pinNumber, int sleepTime, bool debugging);
+void gpioOut(int pinNumber, int sleepTime, bool debugging);
+void gpioOutmicro(int pinNumber, int sleepTime, bool debugging);
 void breakFunction();
 void AzIncrement(double angle, int step);
 void AzDecrement(double angle, int step);

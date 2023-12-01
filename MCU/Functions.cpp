@@ -265,6 +265,9 @@ bool checkConnectInJSON(const std::string &filename)
         // Search for the specific string in each line
         if (line.find("		\"Connect\":1,") != std::string::npos)
         {
+
+
+
             return true;
         }
     }
@@ -467,6 +470,8 @@ void runTLELookupAndPredict(const std::string &satName)
 {
 
     // Run TLE lookup and prediction
+    //Set satname to all uppercases without using toupper
+    //satName = std::toupper(satName);
     std::string command = "./TLELookup \"" + satName + "\" | ./TLEPredict";
     std::cout << command << std::endl;
     system(command.c_str());

@@ -60,10 +60,12 @@ int main()
             if (cleanedResult.find(CONNECT) != std::string::npos)
             {
                 std::cout << "CONNECT" << std::endl;
+                stopTracking = false;
             }
             if (cleanedResult.find(DISCONNECT) != std::string::npos)
             {
                 std::cout << "DISCONNECT" << std::endl;
+                //If disconnect line is false set stopTracking to false
             }
             if (cleanedResult.find("SatelliteName") != std::string::npos)
             {
@@ -83,18 +85,41 @@ int main()
             }
             if (cleanedResult.find("SatNameAuto") != std::string::npos)
             {
-                // Remove the SatNameAuto: part
-                std::string cleanedResult2 = cleanedResult.erase(0, 14);
-                // Remove the \n
-                cleanedResult2.erase(std::remove(cleanedResult2.begin(), cleanedResult2.end(), '\n'), cleanedResult2.end());
-                // remove the ,
-                cleanedResult2.erase(std::remove(cleanedResult2.begin(), cleanedResult2.end(), ','), cleanedResult2.end());
-                // std::cout << "Cleaned Result is: " << cleanedResult2 << std::endl;
-                // Remove the slashes
-                cleanedResult2.erase(std::remove(cleanedResult2.begin(), cleanedResult2.end(), '/'), cleanedResult2.end());
+                // Check if next line is true or false
+                std::string line;
+                std::ifstream myfile("pretty2.json");
+                if (myfile.is_open())
+                {
+                    while (getline(myfile, line))
+                    {
+                        if (line.find("StartAutoBool") != std::string::npos)
+                        {
+                            // Checlk to see if true or false
+                            if (line.find("true") != std::string::npos)
+                            {
+                                // Remove the SatNameAuto: part
+                                std::string cleanedResult2 = cleanedResult.erase(0, 14);
+                                // Remove the \n
+                                cleanedResult2.erase(std::remove(cleanedResult2.begin(), cleanedResult2.end(), '\n'), cleanedResult2.end());
+                                // remove the ,
+                                cleanedResult2.erase(std::remove(cleanedResult2.begin(), cleanedResult2.end(), ','), cleanedResult2.end());
+                                // std::cout << "Cleaned Result is: " << cleanedResult2 << std::endl;
+                                // Remove the slashes
+                                cleanedResult2.erase(std::remove(cleanedResult2.begin(), cleanedResult2.end(), '/'), cleanedResult2.end());
 
-                std::thread trackSatAuto(trackSatellite, cleanedResult2);
-                trackSatAuto.detach();
+                                std::thread trackSatAuto(trackSatellite, cleanedResult2);
+                                trackSatAuto.detach();
+                            }
+                            else
+                            {
+                                std::cout << "StopAuto" << std::endl;
+                                // Run break function
+                                stopTracking = true;
+                                breakFunction;
+                            }
+                        }
+                    }
+                }
             }
             if (cleanedResult.find("SetPosAz") != std::string::npos)
             {
@@ -118,7 +143,7 @@ int main()
                         {
                             std::cout << line << '\n';
                             // Remove the SetPosEl: part
-                            std::string cleanedResult3 = line.erase(0, 15);
+                            std::string cleanedResult3 = line.erase(0, 14);
                             // Remove the \n
                             cleanedResult3.erase(std::remove(cleanedResult3.begin(), cleanedResult3.end(), '\n'), cleanedResult3.end());
                             // remove the ,
@@ -157,7 +182,7 @@ int main()
                         {
                             std::cout << line << '\n';
                             // Remove the SetPosAz: part
-                            std::string cleanedResult3 = line.erase(0, 15);
+                            std::string cleanedResult3 = line.erase(0, 14);
                             // Remove the \n
                             cleanedResult3.erase(std::remove(cleanedResult3.begin(), cleanedResult3.end(), '\n'), cleanedResult3.end());
                             // remove the ,

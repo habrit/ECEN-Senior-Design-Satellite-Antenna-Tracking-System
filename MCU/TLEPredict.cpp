@@ -143,7 +143,7 @@ int main()
                     }
                 }
             }
-            if (hour == 0 && day == startDay + 2)
+            if ((day > startDay + 2) || (month > startMonth) || (year > startYear))
             {
                 break;
             }

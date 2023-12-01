@@ -1,56 +1,27 @@
 {
 	"flags":{
 		"Connect":1,
-		"Decrement(float,float)":[
-			{
-				"value1":1,
-				"value2":1.5
-			},
-			{
-				"value1":1.0,
-				"value2":2.0
-			}
-		],
 		"Disconnect":0,
 		"EndAuto":0,
 		"EndManual":1,
 		"FetchSatellite(string)":[
 			{
-				"SatelliteName":"TEST"
+				"SatelliteName":"ISS (ZARYA)"
 			}
 		],
-		"GetPosition":0,
-		"Increment(float,float)":[
-			{
-				"value1":0.5,
-				"value2":1.5
-			},
-			{
-				"value1":1.0,
-				"value2":2.0
-			}
-		],
+		"HeadingOffset(Float)":-2,
 		"ParkSatellite":1,
-		"SetAziOffset(Float)":[
-			{
-				"value":0.0
-			}
-		],
-		"SetEleOffset(Float)":[
-			{
-				"value":1.5
-			}
-		],
+		"SetAziOffset(Float)":-4,
+		"SetEleOffset(Float)":-2,
 		"SetPosition(float,float)":{
-			"SetPosAz":32,
-			"SetPosEl":30
+			"SetPosAz":135,
+			"SetPosEl":135
 		},
 		"StartAuto(String,int)":{
-			"SatNameAuto":"TEST",
-			"StartAuto":true
+			"SatNameAuto":"Aalto-1",
+			"StartAutoBool":false
 		},
-		"StartManual":1,
-		"StopSatellite":1,
-		"ToggleMode":1
+		"StopSatellite":0,
+		"ToggleMode":0
 	}
 }

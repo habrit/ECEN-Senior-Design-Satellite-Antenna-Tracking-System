@@ -488,6 +488,7 @@ void Satellite::footprint(int p_aipoints[][2], int p_inumberofpoints, double &p_
 }
 double Satellite::doppler(double freqMHZ, bool direction){
     double dopplershift = dopplerOffset(freqMHZ);
+	std::cout << "doppler Offset: " << dopplershift << std::endl;
     if (direction){
         freqMHZ = freqMHZ - dopplershift;
     }
