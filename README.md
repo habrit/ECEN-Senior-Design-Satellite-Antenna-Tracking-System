@@ -8,7 +8,6 @@ TA: Shima Hasanpour
 
 
 ![Alt text](/Web%20Application/SystemDiagram.png)  
-[![Edit Satellite Tracker App](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/satellite-tracker-app-9gk8b9?expanddevtools=1&fontsize=14&hidenavigation=1&theme=dark)  
 
 # Getting Started #
 use "123.123.123.123" to connect rotator.
