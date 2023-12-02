@@ -1,0 +1,105 @@
+/* Apply some basic styles to the console */
+.console {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  background-color: transparent;
+  color: white;
+  box-sizing: border-box;
+  z-index: 999; /* Ensure it's above other content */
+}
+
+
+.rotator-content {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out; /* Make the fade-out transition faster */
+}
+
+.rotator-content.open {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out 0.5s ;
+   /* Add a delay for the fade-in transition */
+}
+
+.leaflet-container {
+  width: 100wh;
+  height: 100vh;
+}
+.rotator {
+  position: fixed;
+  bottom: 0;
+  height: 100vh;
+  right: 0;
+  margin-bottom:0;
+  margin-left: 0;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  z-index: 999;
+  background-color: #181C20;
+  transition: width 0.5s ease-in-out;
+  width: 3rem;
+}
+.rotator.open {
+  width: 20rem;
+}
+
+.model-controls{
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out 1s;
+}
+
+.model-controls.open{
+  opacity: 1;
+}
+
+
+/* Define a transition for smooth animation */
+.gauge-indicator, .gauge-label {
+  transition: all 1s ease-in-out;
+}
+
+/* Style the indicator and label */
+.gauge-indicator {
+  fill: white;
+  width: 0.25rem;
+  height: 32px;
+}
+
+.gauge-label {
+  fill: white;
+  font-size: 12;
+  font-family: 'Roboto Mono', monospace;
+}
+
+
+.set-target-btn{
+   visibility: hidden; 
+}
+
+.remove-sat-btn {
+  visibility: hidden; 
+}
+
+.satellite-card:hover .set-target-btn {
+  visibility: visible; 
+}
+
+.satellite-card:hover .remove-sat-btn {
+  visibility: visible; 
+}
+
+.unselected-sat-card {
+  border: 2px solid  #16191d;
+  border-radius: 4px;
+}
+
+.unselected-sat-card:hover {
+  border: 2px solid #3f50b5;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.satellite-popup {
+  background-color: "red";
+}
