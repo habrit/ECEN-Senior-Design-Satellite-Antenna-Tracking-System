@@ -1,0 +1,43 @@
+{
+  "name": "material-ui-vite-ts",
+  "private": true,
+  "version": "5.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@emotion/react": "latest",
+    "@emotion/styled": "latest",
+    "@mui/icons-material": "latest",
+    "@mui/material": "latest",
+    "@react-three/drei": "^9.86.1",
+    "@react-three/fiber": "^8.14.3",
+    "d3": "^7.8.5",
+    "fs": "^0.0.1-security",
+    "leaflet": "^1.9.4",
+    "leva": "^0.9.35",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-draggable": "^4.4.6",
+    "react-gamepads": "^1.0.0",
+    "react-leaflet": "^4.2.1",
+    "react-loader-spinner": "^5.4.5",
+    "react-resizable-layout": "^0.7.1",
+    "regression": "^2.0.1",
+    "satellite.js": "^5.0.0",
+    "styled-components": "^6.0.8",
+    "three": "^0.157.0",
+    "typescript": "^4.9.5"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.1",
+    "@types/leaflet": "^1.9.6",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@vitejs/plugin-react": "latest",
+    "vite": "latest"
+  }
+}
