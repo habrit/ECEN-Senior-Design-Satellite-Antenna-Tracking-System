@@ -1,0 +1,17 @@
+{
+  "SatelliteTableData": {
+    "ISS": {
+      "downlink": "null",
+      "lastUpdated": "10/2/23",
+      "TLE": "1 25544U 98067A   23275.62375403  .00023541  00000+0  42348-3 0  9997 2 25544  51.6408 156.3810 0005238  62.2237  38.4860 15.49703447418455",
+      "Next Pass": {
+        "startLA": { "Azimuth": "102.19", "Elevation": "0" , "Date": "10/2/23", "Time": "12:23:12"},
+        "peakLA": { "Azimuth": "360", "Elevation": "0", "Date": "10/2/23", "Time": "12:23:12"},
+        "finishLA": { "Azimuth": "360", "Elevation": "0", "Date": "10/2/23", "Time": "12:23:12"},
+        "visibility": "true",
+        "MaxE": "253",
+        "Angle": "21 deg",
+      }
+    }
+  }
+}

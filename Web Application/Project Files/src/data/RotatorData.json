@@ -1,0 +1,31 @@
+{
+  "Operator": {
+    "Name": "David Gent",
+    "Call-Sign": "W5QZ",
+    "Network": "secure network"
+  },
+  "Radio": {
+    "Model": "Yaesu FT-991A",
+    "Signal": "-30",
+    "AOS": "null",
+    "LOS": "null",
+    "Uplink": "64kHz",
+    "Downlink": "32MHz"
+  },
+  "Rotator": {
+    "Location": { "Latitude": "43.210 N", "Longitude": "39.321 W" },
+    "Position": { "Azimuth": "123.24", "Elevation": "90.232" },
+    "Limitations": {
+      "Azimuth": { "max": 90, "min": 0 },
+      "Elevation": { "max": 360, "min": 0 }
+    },
+    "Parameters": {
+      "Heading": "-80 W",
+      "yoffset": "-1.02",
+      "aoffset": "+12.02"
+    },
+    "Park": { "Azimuth": "0", "Elevation": "0" },
+    "Mode": "auto",
+    "Status": "ready"
+  }
+}
