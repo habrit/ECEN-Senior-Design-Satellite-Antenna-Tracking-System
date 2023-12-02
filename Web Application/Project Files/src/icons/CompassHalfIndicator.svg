@@ -1,0 +1,20 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 859 859" width="859" height="859">
+	<title>CompassHalf2-svg</title>
+	<style>
+		.s0 { fill: none;stroke: #ffffff;stroke-width: 2 } 
+		.s1 { fill: none;stroke: #ffffff;stroke-width: 4.5 } 
+		.s2 { fill: #ffffff } 
+	</style>
+	<g id="halfed_white">
+		<g id="Layer">
+		<g id="inner_00000017515477972786439330000011004675448701356966_">
+				<g transform="translate(0,-20)" id="arrow">
+					<path id="Layer" fill-rule="evenodd" stroke="orange" stroke-width="2" d="m-0.6-123.3v-146.9"/>
+					<path id="Layer" fill="orange" d="m9.1-261.4h-18.4c-0.6 0-1-0.6-0.9-1.2l9.2-29.8c0.3-0.9 1.5-0.9 1.7 0l9.2 29.8c0.2 0.6-0.2 1.2-0.8 1.2z"/>
+				</g>
+			</g>
+		
+		</g>
+
+	</g>
+</svg>
